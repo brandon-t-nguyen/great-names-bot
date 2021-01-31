@@ -34,6 +34,7 @@ help_dice =\
 Usage: `!dice [number of dice: default 1] [sides: default 10]`
     Rolls the provided number of dice, defaulting to 1 with 10 sides
     Die values range from 1 to the number of sides.
+    The number of sides may also use "*N*d*M*" notation e.g. `5d20`.
 
     The maximum number of dice that can be rolled is {max_dice}.
 
@@ -44,22 +45,53 @@ Examples:
         * `1, 2, 4, 6, 10`
     * `!dice 5 20`
         * `1, 3, 8, 14, 20`
+    * `!dice 5d20`
+        * `1, 3, 8, 14, 20`
 """.format(max_dice=MAXIMUM_DICE)
 def cmd_dice(args):
     n = 1
+    sides = 10
+
     if len(args) > 0:
-        try:
-            n = int(args[0])
-            args = args[1:]
-        except ValueError:
-            return "`{num}` is not a valid integer".format(num=args[0])
+        if 'd' in args[0]:
+            # NdM notation
+            tokens = args[0].split('d')
+
+            if len(tokens) > 2:
+                return "Invalid notation"
+
+            msg = ""
+
+            try:
+                n = int(tokens[0])
+            except ValueError:
+                msg += "`{num}` is not a valid integer\n".format(num=args[0])
+
+            try:
+                sides = int(tokens[1])
+                if sides < 1: msg +=  "`{num}` is not a valid number of sides".format(num=sides)
+            except ValueError:
+                msg += "`{num}` is not a valid integer\n".format(num=args[0])
+            msg = msg.strip()
+
+            # oops, bad string
+            if len(msg) > 0: return msg
+
+            # ignore rest of args: we've got everything
+            args = []
+        else:
+            try:
+                # boring count
+                n = int(args[0])
+                args = args[1:]
+            except ValueError:
+                return "`{num}` is not a valid integer".format(num=args[0])
     if n == 0:
         return None
 
     if n > MAXIMUM_DICE:
         return "`{num}` exceeds the number of dice that can be rolled ({max_dice})".format(num=n, max_dice=MAXIMUM_DICE)
 
-    sides = 10
     if len(args) > 0:
         try:
             sides = int(args[0])
