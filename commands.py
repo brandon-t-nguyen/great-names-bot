@@ -199,6 +199,8 @@ def parse(command):
     except KeyError:
         # nothing to do if command not found
         pass
+    except:
+        return "Bot encountered an error on its end, sorry :("
 
     return None;
 
