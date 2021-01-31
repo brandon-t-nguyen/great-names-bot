@@ -114,7 +114,17 @@ def cmd_dice(args):
 
     return Message(msg)
 
-
+def emoji_scale_absolute(s):
+    if   s >=  9: return ':sunglasses:'
+    elif s >=  8: return ':laughing:'
+    elif s >=  7: return ':grin:'
+    elif s >=  6: return ':grinning:'
+    elif s >=  5: return ':slight_smile:'
+    elif s >=  4: return ':neutral_face:'
+    elif s >=  3: return ':slight_frown:'
+    elif s >=  2: return ':worried:'
+    elif s >=  1: return ':fearful:'
+    else:         return ':scream:'
 help_roll =\
 """
 Usage: `!roll <attribute score> [skill value + modifiers: default is 0] [number of dice: default is attribute]`
@@ -194,12 +204,13 @@ def cmd_roll(args):
 Rolled {n} {n_noun} with an attribute score of {attr} and {bonus} bonus successes.
 {successes} rolled {rs_noun}, {bonus} bonus {bs_noun}, and {negations} {neg_noun}
 
-**Total successes: {total}**
+**Total successes: {total}  {emoji}**
 """.format(n=n, n_noun=('die' if n==1 else 'dice'), attr=attr, bonus=result.bonus,
            successes=result.successes, negations=result.negations, total=result.total,
            rs_noun='success' if result.successes == 1 else 'successes',
            bs_noun='success' if result.bonus == 1 else 'successes',
-           neg_noun='negation' if result.negations == 1 else 'negations')
+           neg_noun='negation' if result.negations == 1 else 'negations',
+           emoji=emoji_scale_absolute(result.total))
 
     return Message(content=msg)
 
