@@ -116,8 +116,8 @@ def cmd_dice(args):
                 args = args[1:]
             except ValueError:
                 return "`{num}` is not a valid integer".format(num=args[0])
-    if n == 0:
-        return None
+
+    if n <= 0: return Message("Number of dice to be rolled must be greater than 0")
 
     if n > MAXIMUM_DICE:
         return "`{num}` exceeds the number of dice that can be rolled ({max_dice})".format(num=n, max_dice=MAXIMUM_DICE)
@@ -205,6 +205,7 @@ def cmd_roll(args):
         except ValueError:
             return "`{num}` is not a valid integer".format(num=args[0])
 
+    if n <= 0: return Message("Number of dice to be rolled must be greater than 0")
     if n > MAXIMUM_DICE:
         return "`{num}` exceeds the number of dice that can be rolled ({max_dice})".format(num=n, max_dice=MAXIMUM_DICE)
 
