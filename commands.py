@@ -198,11 +198,13 @@ def cmd_roll(args):
     msg +=\
 """
 
-Rolled {n} {die} with an attribute score of {attr} and {bonus} bonus successes.
-{successes} rolled successes, {bonus} bonus successes, and {negations} negations
+Rolled {n} {n_noun} with an attribute score of {attr} and {bonus} bonus successes.
+{successes} rolled {rs_noun}, {bonus} bonus {bs_noun}, and {negations} {neg_noun}
 
 **Total successes: {total}**
-""".format(n=n, die=('die' if n==1 else 'dice'), attr=attr, bonus=bonus, successes=successes, negations=negations, total=total)
+""".format(n=n, n_noun=('die' if n==1 else 'dice'), attr=attr, bonus=bonus, successes=successes, negations=negations, total=total,
+           rs_noun='success' if successes == 1 else 'successes', bs_noun='success' if bonus == 1 else 'successes',
+           neg_noun='negation' if negations == 1 else 'negations')
 
     return msg
 
