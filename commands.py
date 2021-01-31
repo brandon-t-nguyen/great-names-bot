@@ -129,10 +129,10 @@ Usage: `!roll <attribute score> [skill value + modifiers: default is 0] [number 
     The maximum number of dice that can be rolled is {max_dice}.
 
 Examples:
-    * `!roll 5`: this will roll 5 die where rolled values &leq;5 are successes
-    * `!roll 5 2`: this will roll 5 die where rolled values &leq;5 are successes, with 2 bonus successes
-    * `!roll 5 0 7`: this will roll 7 die where rolled values &leq;5 are successes, with 0 bonus successes 
-    * `!roll 5 1 +4`: this will roll 9 (5+4) die where rolled values &leq;5 are successes, with 1 bonus success
+    * `!roll 5`: this will roll 5 dice where rolled values ≤5 are successes
+    * `!roll 5 2`: this will roll 5 dice where rolled values ≤5 are successes, with 2 bonus successes
+    * `!roll 5 0 7`: this will roll 7 dice where rolled values ≤5 are successes, with 0 bonus successes
+    * `!roll 5 1 +4`: this will roll 9 (5+4) dice where rolled values ≤5 are successes, with 1 bonus success
 """.format(max_dice=MAXIMUM_DICE)
 def cmd_roll(args):
     if len(args) == 0:
