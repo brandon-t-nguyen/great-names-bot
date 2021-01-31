@@ -3,8 +3,10 @@ import numpy as np # we want their nice randint for uniform random *integers*
 
 import roller
 from classes import Message as Message
+import stats
 
 MAXIMUM_DICE = 1000
+MAXIMUM_SAMPLE_SIZE = 1000000
 VERSION_STRING = '1.0.0'
 
 def log(string):
@@ -44,7 +46,10 @@ class Commands:
         subcommand = args[0]
         try:
             if len(args) > 1 and args[1] == 'help':
-                return self.map[subcommand].help(args[1:])
+                help_data = self.map[subcommand].help
+                if type(help_data) is str: return Message(help_data)
+                elif help_data is None:    return Message("Usage: `{name}`".format(name=subcommand))
+                else:                      return self.map[subcommand].help(args[1:])
             else:
                 return self.map[subcommand].func(args[1:])
         except KeyError:
@@ -238,10 +243,36 @@ Rolled {n} {n_noun} with an attribute score of {attr} and {bonus} bonus successe
 
 
 def cmd_stats_sim_success_histogram(args):
-    return Message("Sorry, not implemented yet :slight_frown:")
+    if len(args) < 2:
+        return Message("Expected at least 2 arguments, found {}".format(len(args)))
+
+    msg_parse = ""
+    try:               sample_size = int(args[0])
+    except ValueError: msg_parse += "`{}` is not a valid integer for sample size".format(args[0])
+
+    if sample_size > MAXIMUM_SAMPLE_SIZE:
+        return Message("`{num}` exceeds the number of maximum sample size (`{max}`)".format(num=sample_size,
+                                                                                           max=MAXIMUM_SAMPLE_SIZE))
+    attr = 0
+    try:               attr = int(args[1])
+    except ValueError: msg_parse += "`{}` is not a valid integer for sample size".format(args[1])
+
+    n = attr
+    if len(args) > 2:
+        try:
+            if args[2][0] == '+': n = attr + int(args[2][1:])
+            else:                 n = int(args[2])
+        except ValueError: msg_parse += "`{}` is not a valid integer for sample size".format(args[1])
+
+    if n <= 0: return Message("Number of dice to be rolled must be greater than 0")
+
+    if len(msg_parse) > 0: return Message(msg_parse)
+
+    path = stats.success_histogram(sample_size, attr, n)
+    return Message("Simulation results", file_path=path)
 
 commands_stats_sim = Commands()
-commands_stats_sim.add(Command('success_histogram', "Provides a histogram of successes given attribute score and dice count", "Usage: `success_histogram <sample size> <attribute score> <dice count>`", cmd_stats_sim_success_histogram))
+commands_stats_sim.add(Command('success-histogram', "Provides a histogram of successes given attribute score and dice count", "Usage: `success-histogram <sample size> <attribute score> [dice count: default attr, use '+' for relative]`", cmd_stats_sim_success_histogram))
 
 
 def cmd_stats_simulate(args): return(commands_stats_sim.execute(args))
