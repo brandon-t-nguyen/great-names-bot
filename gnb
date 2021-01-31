@@ -82,10 +82,20 @@ async def gateway_loop(uri):
                         guild_id = data['guild_id']
                         channel_id = data['channel_id']
                         message_id = data['id']
-                        payload = {'content': msg.content, 'message_reference': {'message_id': message_id, 'channel_id': channel_id, 'guild_id': guild_id}}
+                        msg_payload = {'content': msg.content, 'message_reference': {'message_id': message_id, 'channel_id': channel_id, 'guild_id': guild_id}}
                         url = '{}/channels/{}/messages'.format(api_url, channel_id)
-                        r = requests.post(url, headers=headers, json=payload)
-                        log("Sent message ({}: {})".format(url, str(r.status_code)))
+                        if msg.multipart:
+                            # https://stackoverflow.com/questions/35939761/how-to-send-json-as-part-of-multipart-post-request
+                            files = {
+                                'payload_json': (None, json.dumps(msg_payload), 'application/json'),
+                                'file': open(msg.file_path, 'rb'),
+                            }
+                            r = requests.post(url, headers=headers, files=files)
+                            log("Sent Multipart message ({}: {}): file '{}'".format(url,
+                                                                                    str(r.status_code), msg.file_path))
+                        else:
+                            r = requests.post(url, headers=headers, json=msg_payload)
+                            log("Sent message ({}: {})".format(url, str(r.status_code)))
             elif gpay['op'] == 11:
                 log("Received heartbeat ACK")
             elif gpay['op'] == 9:
