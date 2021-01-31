@@ -1,3 +1,8 @@
+import time
+import numpy as np # we want their nice randint for uniform random *integers*
+
+def log(string):
+    print('({:.4f}):     '.format(time.time()) + string)
 # command functions will return a string
 # provide them the args *after* the command itself (not unix-style!)
 
@@ -19,6 +24,34 @@ class Commands:
         self.map[command.name] = command
 
 commands = Commands()
+
+def cmd_roll(args):
+    n = 1
+    if len(args) > 0:
+        try:
+            n = int(args[0])
+        except ValueError:
+            return "{num} is not a valid integer".format(num=args[0])
+    if n == 0:
+        return None
+
+    rolls = []
+    rolls = sorted(np.random.randint(1, high=10, size=n))
+    msg = ""
+    for roll in rolls[0:-1]:
+        msg += str(roll) + ', '
+    if len(rolls) > 0:
+        msg += str(rolls[-1])
+
+    return msg
+
+help_roll =\
+"""
+usage: !roll [number of die: default 1]
+    Rolls the provided number of die, defaulting to 1
+    Die values range from 1 to 10
+"""
+
 
 def cmd_help(args):
     if len(args) == 0:
@@ -64,7 +97,9 @@ def parse(command):
 
     # run the command
     try:
-        return commands.map[cmd].func(args)
+        func = commands.map[cmd].func
+        log('Running command \'{cmd}\' with args {args}'.format(cmd=cmd, args=args))
+        return func(args)
     except KeyError:
         # nothing to do if command not found
         pass
@@ -74,3 +109,4 @@ def parse(command):
 # initialization
 commands.add(Command('!help', "Provides help for commands", cmd_help, cmd_help))
 commands.add(Command('!about', "Provides info about this bot", None, cmd_about))
+commands.add(Command('!roll', "Rolls d10s", help_roll, cmd_roll))
