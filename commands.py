@@ -195,7 +195,7 @@ Available commands:
                 else:
                     msg = cmd.help(args[1:])
             else:
-                msg = "`{cmd}` is not a valid command"
+                msg = "`{cmd}` is not a valid command".format(cmd=cmd.name)
     return msg
 
 def cmd_about(args):
