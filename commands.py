@@ -2,6 +2,7 @@ import time
 import numpy as np # we want their nice randint for uniform random *integers*
 
 MAXIMUM_DICE = 1000
+VERSION_STRING = '1.0'
 
 def log(string):
     print('({:.4f}):     '.format(time.time()) + string)
@@ -201,13 +202,13 @@ Available commands:
 def cmd_about(args):
     return\
 """
-**Great Names Bot**
+**Great Names Bot** v{ver}
 
 This bot assists in performing die rolls and success calculation in the
 Great Names system by Adam Franti.
 
 Bot maintainer: Brandon Nguyen
-"""
+""".format(ver=VERSION_STRING)
 
 # parses command, returns message
 # precondition: command has > 0 characters
