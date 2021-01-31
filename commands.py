@@ -36,7 +36,7 @@ def cmd_roll(args):
         return None
 
     rolls = []
-    rolls = sorted(np.random.randint(1, high=10, size=n))
+    rolls = sorted(np.random.randint(1, high=11, size=n))
     msg = ""
     for roll in rolls[0:-1]:
         msg += str(roll) + ', '
