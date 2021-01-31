@@ -2,6 +2,7 @@ import time
 import numpy as np # we want their nice randint for uniform random *integers*
 
 import roller
+from classes import Message as Message
 
 MAXIMUM_DICE = 1000
 VERSION_STRING = '1.0.0'
@@ -77,7 +78,7 @@ def cmd_dice(args):
             msg = msg.strip()
 
             # oops, bad string
-            if len(msg) > 0: return msg
+            if len(msg) > 0: return Message(msg)
 
             # ignore rest of args: we've got everything
             args = []
@@ -111,7 +112,7 @@ def cmd_dice(args):
     if len(rolls) > 0:
         msg += str(rolls[-1])
 
-    return msg
+    return Message(msg)
 
 
 help_roll =\
@@ -200,7 +201,7 @@ Rolled {n} {n_noun} with an attribute score of {attr} and {bonus} bonus successe
            bs_noun='success' if result.bonus == 1 else 'successes',
            neg_noun='negation' if result.negations == 1 else 'negations')
 
-    return msg
+    return Message(content=msg)
 
 
 def cmd_help(args):
@@ -225,10 +226,10 @@ Available commands:
                     msg = cmd.help(args[1:])
             else:
                 msg = "`{cmd}` is not a valid command".format(cmd=cmd.name)
-    return msg
+    return Message(content=msg)
 
 def cmd_about(args):
-    return\
+    msg = \
 """
 **Great Names Bot** v{ver}
 
@@ -237,6 +238,7 @@ Great Names system by Adam Franti.
 
 Bot maintainer: Brandon Nguyen
 """.format(ver=VERSION_STRING)
+    return Message(msg)
 
 # parses command, returns message
 # precondition: command has > 0 characters
@@ -256,7 +258,7 @@ def parse(command):
     except Exception as e:
         log('Ran into exception!')
         log(str(e))
-        return "I ran into an error on my end, sorry :cry:"
+        return Message("I ran into an error on my end, sorry :cry:")
 
     return None;
 
