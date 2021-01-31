@@ -12,8 +12,25 @@ import json
 # command functions will return a string
 # provide them the args *after* the command itself (not unix-style!)
 
-commands = sorted(['!help', '!roll', '!claim', '!about'])
-commands.sort()
+class Command:
+    # help_data can be a function (with args passed in), or a string
+    def __init__(self, name, desc, help_data, func):
+        self.name = name;
+        self.desc = desc;
+        self.help = help_data;
+        self.func = func;
+
+class Commands:
+    def __init__(self):
+        self.list = []
+        self.map = {}
+
+    def add(self, command):
+        self.list.append(command)
+        self.map[command.name] = command
+
+commands = Commands()
+
 def cmd_help(args):
     if len(args) == 0:
         msg =\
@@ -22,18 +39,22 @@ For additional help, run `!help <command name>` e.g. `!help !roll`
 
 Available commands:
 """
-        for cmd in commands:
-            msg += "`{cmd}`\n".format(cmd=cmd)
+        for cmd in commands.list:
+            msg += "`{cmd}`: {desc}\n".format(cmd=cmd.name, desc=cmd.desc)
     else:
-        # TODO
-        msg = "TODO"
+        for name in args:
+            if name in commands.map.keys():
+                cmd = commands.map[name]
+                if type(cmd.help) is str:
+                    msg = cmd.help
+                else:
+                    msg = cmd.help(args[1:])
+            else:
+                msg = "`{cmd}` is not a valid command"
     return msg
 
-commands_functions = {
-    '!help': cmd_help,
-    #'!roll': cmd_roll,
-    #'!claim': cmd_claim,
-}
+def initialize_commands():
+    commands.add(Command('!help', "Provides help for commands", cmd_help, cmd_help))
 
 # parses command, returns message
 # precondition: command has > 0 characters
@@ -44,7 +65,7 @@ def parse_command(command):
 
     # run the command
     try:
-        return commands_functions[cmd](args)
+        return commands.map[cmd].func(args)
     except KeyError:
         # nothing to do if command not found
         pass
@@ -137,6 +158,9 @@ if __name__ == "__main__":
     headers = {'User-Agent': "Great Names Bot",'Authorization': 'Bot ' + token}
     channel_id = '805235577213026316'
     api_url = 'https://discord.com/api'
+
+    initialize_commands()
+    log("Initialized data structures")
 
     # get gateway
     log("Requesting bot gateway...")
