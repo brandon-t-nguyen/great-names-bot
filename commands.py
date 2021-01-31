@@ -29,6 +29,28 @@ class Commands:
         self.list.append(command)
         self.map[command.name] = command
 
+    def help_commands(self, args, nest=0):
+        indent = ""
+        while nest > 0: indent = indent + ' '
+        msg = ""
+        for cmd in self.list:
+            msg += "{indent}* `{name}`: {desc}\n".format(indent=indent, name=cmd.name, desc=cmd.desc)
+        return msg
+
+    def execute(self, args):
+        if len(args) == 0:
+            return Message(content="Please provide a subcommand\nSubcommands:\n{}".format(self.help_commands(args)))
+
+        subcommand = args[0]
+        try:
+            if len(args) > 1 and args[1] == 'help':
+                return self.map[subcommand].help(args[1:])
+            else:
+                return self.map[subcommand].func(args[1:])
+        except KeyError:
+            return Message(content="{name} is not a valid subcommand".format(subcommand))
+
+
 commands = Commands()
 
 
@@ -215,6 +237,36 @@ Rolled {n} {n_noun} with an attribute score of {attr} and {bonus} bonus successe
     return Message(content=msg)
 
 
+def cmd_stats_sim_success_histogram(args):
+    return Message("Sorry, not implemented yet :slight_frown:")
+
+commands_stats_sim = Commands()
+commands_stats_sim.add(Command('success_histogram', "Provides a histogram of successes given attribute score and dice count", "Usage: `success_histogram <sample size> <attribute score> <dice count>`", cmd_stats_sim_success_histogram))
+
+
+def cmd_stats_simulate(args): return(commands_stats_sim.execute(args))
+commands_stats = Commands()
+commands_stats.add(Command('simulate', "Perform simulations and generate statistics", "Usage: `simulate <subcommand>`", cmd_stats_simulate))
+
+def help_stats(args):
+    msg =\
+"""
+Usage: `!stats <subcommand>`
+
+Subcommands:
+"""
+    msg += commands_stats.help_commands(args)
+    return Message(msg)
+    # for cmd in commands_stats.list:
+    #     if type(cmd.help) is str:
+    #         msg = cmd.help
+    #     elif cmd.help is None:
+    #         msg = "Usage: `{cmd}`\n{desc}".format(cmd=cmd.name, desc=cmd.desc)
+    #     else:
+    #         msg = cmd.help(args[1:])
+
+def cmd_stats(args): return(commands_stats.execute(args))
+
 def cmd_help(args):
     if len(args) == 0:
         msg =\
@@ -226,17 +278,19 @@ Available commands:
         for cmd in commands.list:
             msg += "`{cmd}`: {desc}\n".format(cmd=cmd.name, desc=cmd.desc)
     else:
+        msg = ""
         for name in args:
             if name in commands.map.keys():
                 cmd = commands.map[name]
                 if type(cmd.help) is str:
-                    msg = cmd.help
+                    msg += cmd.help
                 elif cmd.help is None:
-                    msg = "Usage: `{cmd}`\n{desc}".format(cmd=cmd.name, desc=cmd.desc)
+                    msg += "Usage: `{cmd}`\n{desc}".format(cmd=cmd.name, desc=cmd.desc)
                 else:
-                    msg = cmd.help(args[1:])
+                    msg += cmd.help(args[1:]).content
             else:
-                msg = "`{cmd}` is not a valid command".format(cmd=cmd.name)
+                msg += "`{name}` is not a valid command".format(name=name)
+            msg += '\n'
     return Message(content=msg)
 
 def cmd_about(args):
@@ -278,3 +332,4 @@ commands.add(Command('!help', "Provides help for commands", cmd_help, cmd_help))
 commands.add(Command('!about', "Provides info about this bot", None, cmd_about))
 commands.add(Command('!dice', "Rolls dice, default being d10", help_dice, cmd_dice))
 commands.add(Command('!roll', "Rolls to calculate successes", help_roll, cmd_roll))
+commands.add(Command('!stats', "Provides various statistics", help_stats, cmd_stats))
