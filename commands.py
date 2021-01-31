@@ -7,7 +7,7 @@ import stats
 
 MAXIMUM_DICE = 1000
 MAXIMUM_SAMPLE_SIZE = 1000000
-VERSION_STRING = '1.0.0'
+VERSION_STRING = '1.1.0'
 
 def log(string):
     print('({:.4f}): commands: '.format(time.time()) + string)
