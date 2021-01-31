@@ -59,6 +59,96 @@ Examples:
 """
 
 
+help_prove =\
+"""
+Usage: `!prove <attribute score> [skill value + modifiers: default is 0] [dice count: default is attribute]`
+    By default, rolls a number of dice equal to the provided attribute score.
+    Optional positional arguments include:
+        * skill value + modifiers (bonuses, power) to add to the total number of successes. The default is 0.
+        * dice count, to handle additional dice granted by points of power.
+          If this argument has a `+` (e.g. `+2`) in front of the number, it will be added to the attribute score.
+          Otherwise, the provided number will be the number of die rolled.
+
+    This will perform the "prove" mechanic, where the number of successes is
+    determined by how many die values are less than or equal to the attribute score,
+    with 10s negating a success.
+
+Examples:
+    * `!prove 5`: this will roll 5 die where rolled values &leq;5 are successes
+    * `!prove 5 2`: this will roll 5 die where rolled values &leq;5 are successes, with 2 bonus successes
+    * `!prove 5 0 7`: this will roll 7 die where rolled values &leq;5 are successes, with 0 bonus successes 
+    * `!prove 5 1 +4`: this will roll 9 (5+4) die where rolled values &leq;5 are successes, with 1 bonus success
+"""
+def cmd_prove(args):
+    if len(args) == 0:
+        return "Please provide an attribute score to prove with\n" + help_prove
+
+    try:
+        attr = int(args[0])
+        args = args[1:]
+    except ValueError:
+        return "`{num}` is not a valid integer".format(num=args[0])
+
+    bonus = 0
+    if len(args) > 0:
+        try:
+            bonus = int(args[0])
+            args = args[1:]
+        except ValueError:
+            return "`{num}` is not a valid integer".format(num=args[0])
+
+    n = attr
+    if len(args) > 0:
+        try:
+            if args[0][0] == '+':
+                # relative add
+                n = attr + int(args[0][1:])
+            else:
+                # absolute count
+                n = int(args[0])
+            args = args[1:]
+        except ValueError:
+            return "`{num}` is not a valid integer".format(num=args[0])
+    
+    rolls = sorted(np.random.randint(1, high=11, size=n))
+    
+    successes = 0
+    negations = 0
+    for roll in rolls:
+        if roll == 10:
+            negations += 1
+        elif roll <= attr:
+            successes += 1
+
+    total = max(0, successes + bonus - negations)
+
+    # print rolls
+    msg = ""
+    for roll in rolls[0:-1]:
+        if roll <= attr: fmt = '**'
+        elif roll == 10: fmt = '~~'
+        else:            fmt = ''
+        msg += "{fmt}{val}{fmt}, ".format(fmt=fmt, val=str(roll))
+    if len(rolls) > 0:
+        roll = rolls[-1]
+        if roll <= attr: fmt = '**'
+        elif roll == 10: fmt = '~~'
+        else:            fmt = ''
+        msg += "{fmt}{val}{fmt}".format(fmt=fmt, val=str(roll))
+
+    # print explanation
+    msg +=\
+"""
+
+Rolled {n} {die} with an attribute score of {attr} and {bonus} bonus successes.
+{successes} rolled successes, {bonus} bonus successes, and {negations} negations
+
+**Total successes: {total}**
+""".format(n=n, die=('die' if n==1 else 'dice'), attr=attr, bonus=bonus, successes=successes, negations=negations, total=total)
+
+    return msg
+
+
 def cmd_help(args):
     if len(args) == 0:
         msg =\
@@ -116,3 +206,4 @@ def parse(command):
 commands.add(Command('!help', "Provides help for commands", cmd_help, cmd_help))
 commands.add(Command('!about', "Provides info about this bot", None, cmd_about))
 commands.add(Command('!roll', "Rolls d10s", help_roll, cmd_roll))
+commands.add(Command('!prove', "Rolls to prove a claim", help_prove, cmd_prove))
