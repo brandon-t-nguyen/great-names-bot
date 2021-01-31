@@ -25,7 +25,20 @@ class Commands:
 
 commands = Commands()
 
-def cmd_roll(args):
+
+help_dice =\
+"""
+Usage: `!dice [number of dice: default 1]`
+    Rolls the provided number of dice, defaulting to 1
+    Die values range from 1 to 10
+
+Examples:
+    * `!dice`
+        * `4`
+    * `!dice 5`
+        * `1, 2, 4, 6, 10`
+"""
+def cmd_dice(args):
     n = 1
     if len(args) > 0:
         try:
@@ -45,23 +58,10 @@ def cmd_roll(args):
 
     return msg
 
+
 help_roll =\
 """
-Usage: `!roll [number of die: default 1]`
-    Rolls the provided number of die, defaulting to 1
-    Die values range from 1 to 10
-
-Examples:
-    * `!roll`
-        * `4`
-    * `!roll 5`
-        * `1, 2, 4, 6, 10`
-"""
-
-
-help_prove =\
-"""
-Usage: `!prove <attribute score> [skill value + modifiers: default is 0] [dice count: default is attribute]`
+Usage: `!roll <attribute score> [skill value + modifiers: default is 0] [dice count: default is attribute]`
     By default, rolls a number of dice equal to the provided attribute score.
     Optional positional arguments include:
         * skill value + modifiers (bonuses, power) to add to the total number of successes. The default is 0.
@@ -69,19 +69,19 @@ Usage: `!prove <attribute score> [skill value + modifiers: default is 0] [dice c
           If this argument has a `+` (e.g. `+2`) in front of the number, it will be added to the attribute score.
           Otherwise, the provided number will be the number of die rolled.
 
-    This will perform the "prove" mechanic, where the number of successes is
+    This will calculate the number of successes, where the number of successes is
     determined by how many die values are less than or equal to the attribute score,
     with 10s negating a success.
 
 Examples:
-    * `!prove 5`: this will roll 5 die where rolled values &leq;5 are successes
-    * `!prove 5 2`: this will roll 5 die where rolled values &leq;5 are successes, with 2 bonus successes
-    * `!prove 5 0 7`: this will roll 7 die where rolled values &leq;5 are successes, with 0 bonus successes 
-    * `!prove 5 1 +4`: this will roll 9 (5+4) die where rolled values &leq;5 are successes, with 1 bonus success
+    * `!roll 5`: this will roll 5 die where rolled values &leq;5 are successes
+    * `!roll 5 2`: this will roll 5 die where rolled values &leq;5 are successes, with 2 bonus successes
+    * `!roll 5 0 7`: this will roll 7 die where rolled values &leq;5 are successes, with 0 bonus successes 
+    * `!roll 5 1 +4`: this will roll 9 (5+4) die where rolled values &leq;5 are successes, with 1 bonus success
 """
-def cmd_prove(args):
+def cmd_roll(args):
     if len(args) == 0:
-        return "Please provide an attribute score to prove with\n" + help_prove
+        return "Please provide an attribute score\n" + help_roll
 
     try:
         attr = int(args[0])
@@ -178,7 +178,7 @@ def cmd_about(args):
 """
 **Great Names Bot**
 
-This bot assists in performing die rolls and proves for claims in the
+This bot assists in performing die rolls and success calculation in the
 Great Names system by Adam Franti.
 
 Bot maintainer: Brandon Nguyen
@@ -205,5 +205,5 @@ def parse(command):
 # initialization
 commands.add(Command('!help', "Provides help for commands", cmd_help, cmd_help))
 commands.add(Command('!about', "Provides info about this bot", None, cmd_about))
-commands.add(Command('!roll', "Rolls d10s", help_roll, cmd_roll))
-commands.add(Command('!prove', "Rolls to prove a claim", help_prove, cmd_prove))
+commands.add(Command('!dice', "Rolls d10s", help_dice, cmd_dice))
+commands.add(Command('!roll', "Rolls to calculate successes", help_roll, cmd_roll))
