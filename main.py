@@ -1,5 +1,6 @@
 #!/bin/env python3
 
+import os
 import time
 import requests
 import asyncio
@@ -87,7 +88,20 @@ async def gateway_loop(uri):
 
 if __name__ == "__main__":
     log("Begin execution")
-    token = 'NzM0NDY3ODg1NzI4MjY4Mjg4.XxSIhQ.IGOaJcrGUsAA490RPVoPetzZYpg'
+
+    # load token
+    token_path = './token'
+    if 'GNB_TOKEN_PATH' in os.environ:
+        token_path = os.environ['GNB_TOKEN_PATH']
+
+    log("Loading token at " + token_path)
+    try:
+        with open(token_path, 'r') as token_file:
+            token = token_file.read().strip()
+    except FileNotFoundError:
+        log("Unable to find token file " + token_path + ", exiting...")
+        exit(1)
+
     # let's make a random ass request to post a message
     headers = {'User-Agent': "Great Names Bot",'Authorization': 'Bot ' + token}
     channel_id = '805235577213026316'
