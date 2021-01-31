@@ -28,28 +28,41 @@ commands = Commands()
 
 help_dice =\
 """
-Usage: `!dice [number of dice: default 1]`
-    Rolls the provided number of dice, defaulting to 1
-    Die values range from 1 to 10
+Usage: `!dice [number of dice: default 1] [sides: default 10]`
+    Rolls the provided number of dice, defaulting to 1 with 10 sides
+    Die values range from 1 to the number of sides
 
 Examples:
     * `!dice`
         * `4`
     * `!dice 5`
         * `1, 2, 4, 6, 10`
+    * `!dice 5 20`
+        * `1, 3, 8, 14, 20`
 """
 def cmd_dice(args):
     n = 1
     if len(args) > 0:
         try:
             n = int(args[0])
+            args = args[1:]
         except ValueError:
             return "`{num}` is not a valid integer".format(num=args[0])
     if n == 0:
         return None
 
+    sides = 10
+    if len(args) > 0:
+        try:
+            sides = int(args[0])
+            args = args[1:]
+            if sides < 1:
+                return "`{num}` is not a valid number of sides".format(num=sides)
+        except ValueError:
+            return "`{num}` is not a valid integer".format(num=args[0])
+
     rolls = []
-    rolls = sorted(np.random.randint(1, high=11, size=n))
+    rolls = sorted(np.random.randint(1, high=sides+1, size=n))
     msg = ""
     for roll in rolls[0:-1]:
         msg += str(roll) + ', '
@@ -207,5 +220,5 @@ def parse(command):
 # initialization
 commands.add(Command('!help', "Provides help for commands", cmd_help, cmd_help))
 commands.add(Command('!about', "Provides info about this bot", None, cmd_about))
-commands.add(Command('!dice', "Rolls d10s", help_dice, cmd_dice))
+commands.add(Command('!dice', "Rolls dice, default being d10", help_dice, cmd_dice))
 commands.add(Command('!roll', "Rolls to calculate successes", help_roll, cmd_roll))
