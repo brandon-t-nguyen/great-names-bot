@@ -118,7 +118,7 @@ Usage: `!roll <attribute score> [skill value + modifiers: default is 0] [number 
     By default, rolls a number of dice equal to the provided attribute score.
     Optional positional arguments include:
         * skill value + modifiers (bonuses, power) to add to the total number of successes. The default is 0.
-        * number of dice, to handle additional dice granted by points of power.
+        * number of dice, to handle additional dice granted by points of stamina.
           If this argument has a `+` (e.g. `+2`) in front of the number, it will be added to the attribute score.
           Otherwise, the provided number will be the number of die rolled.
 
