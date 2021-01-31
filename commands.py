@@ -2,7 +2,7 @@ import time
 import numpy as np # we want their nice randint for uniform random *integers*
 
 MAXIMUM_DICE = 1000
-VERSION_STRING = '1.0'
+VERSION_STRING = '1.0.0'
 
 def log(string):
     print('({:.4f}): commands: '.format(time.time()) + string)
