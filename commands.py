@@ -47,7 +47,7 @@ def cmd_roll(args):
 
 help_roll =\
 """
-usage: `!roll [number of die: default 1]`
+Usage: `!roll [number of die: default 1]`
     Rolls the provided number of die, defaulting to 1
     Die values range from 1 to 10
 
@@ -76,7 +76,7 @@ Available commands:
                 if type(cmd.help) is str:
                     msg = cmd.help
                 elif cmd.help is None:
-                    msg = "usage: `{cmd}`\n{desc}".format(cmd=cmd.name, desc=cmd.desc)
+                    msg = "Usage: `{cmd}`\n{desc}".format(cmd=cmd.name, desc=cmd.desc)
                 else:
                     msg = cmd.help(args[1:])
             else:
@@ -88,8 +88,8 @@ def cmd_about(args):
 """
 **Great Names Bot**
 
-This bot assists in performing die rolls and claims for the Great Names
-system by Adam Franti.
+This bot assists in performing die rolls and proves for claims in the
+Great Names system by Adam Franti.
 
 Bot maintainer: Brandon Nguyen
 """
