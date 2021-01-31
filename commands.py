@@ -42,6 +42,17 @@ Available commands:
                 msg = "`{cmd}` is not a valid command"
     return msg
 
+def cmd_about(args):
+    return\
+"""
+**Great Names Bot**
+
+This bot assists in performing die rolls and claims for the Great Names
+system by Adam Franti.
+
+Bot maintainer: Brandon Nguyen
+"""
+
 # parses command, returns message
 # precondition: command has > 0 characters
 def parse(command):
@@ -60,3 +71,4 @@ def parse(command):
 
 # initialization
 commands.add(Command('!help', "Provides help for commands", cmd_help, cmd_help))
+commands.add(Command('!about', "Provides info about this bot", "usage: `!about`", cmd_about))
