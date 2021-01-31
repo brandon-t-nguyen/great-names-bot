@@ -36,6 +36,8 @@ Available commands:
                 cmd = commands.map[name]
                 if type(cmd.help) is str:
                     msg = cmd.help
+                elif cmd.help is None:
+                    msg = "usage: `{cmd}`\n{desc}".format(cmd=cmd.name, desc=cmd.desc)
                 else:
                     msg = cmd.help(args[1:])
             else:
@@ -71,4 +73,4 @@ def parse(command):
 
 # initialization
 commands.add(Command('!help', "Provides help for commands", cmd_help, cmd_help))
-commands.add(Command('!about', "Provides info about this bot", "usage: `!about`", cmd_about))
+commands.add(Command('!about', "Provides info about this bot", None, cmd_about))
