@@ -2,13 +2,13 @@ import numpy as np
 
 class SuccessResult:
     def __init__(self, rolls, successes, bonus, negations, min_success=0):
-        self.rolls = rolls
-        self.successes = successes
-        self.bonus = bonus
-        self.negations = negations
-        self.raw_total = successes + bonus - negations
-        self.min = min_success
-        self.total = max(self.raw_total, self.min)
+        self.rolls     = rolls
+        self.successes = int(successes)
+        self.bonus     = int(bonus)
+        self.negations = int(negations)
+        self.raw_total = int(successes + bonus - negations)
+        self.min       = int(min_success)
+        self.total     = int(max(self.raw_total, self.min))
 
 # success roller
 def roll(attr, bonus, n, min_success=0):
