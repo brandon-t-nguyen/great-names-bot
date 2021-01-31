@@ -1,6 +1,8 @@
 import time
 import numpy as np # we want their nice randint for uniform random *integers*
 
+import roller
+
 MAXIMUM_DICE = 1000
 VERSION_STRING = '1.0.0'
 
@@ -168,27 +170,17 @@ def cmd_roll(args):
     if n > MAXIMUM_DICE:
         return "`{num}` exceeds the number of dice that can be rolled ({max_dice})".format(num=n, max_dice=MAXIMUM_DICE)
 
-    rolls = sorted(np.random.randint(1, high=11, size=n))
-
-    successes = 0
-    negations = 0
-    for roll in rolls:
-        if roll == 10:
-            negations += 1
-        elif roll <= attr:
-            successes += 1
-
-    total = max(0, successes + bonus - negations)
+    result = roller.roll(attr, bonus, n)
 
     # print rolls
     msg = ""
-    for roll in rolls[0:-1]:
+    for roll in result.rolls[0:-1]:
         if roll <= attr: fmt = '**'
         elif roll == 10: fmt = '~~'
         else:            fmt = ''
         msg += "{fmt}{val}{fmt}, ".format(fmt=fmt, val=str(roll))
-    if len(rolls) > 0:
-        roll = rolls[-1]
+    if len(result.rolls) > 0:
+        roll = result.rolls[-1]
         if roll <= attr: fmt = '**'
         elif roll == 10: fmt = '~~'
         else:            fmt = ''
@@ -202,9 +194,11 @@ Rolled {n} {n_noun} with an attribute score of {attr} and {bonus} bonus successe
 {successes} rolled {rs_noun}, {bonus} bonus {bs_noun}, and {negations} {neg_noun}
 
 **Total successes: {total}**
-""".format(n=n, n_noun=('die' if n==1 else 'dice'), attr=attr, bonus=bonus, successes=successes, negations=negations, total=total,
-           rs_noun='success' if successes == 1 else 'successes', bs_noun='success' if bonus == 1 else 'successes',
-           neg_noun='negation' if negations == 1 else 'negations')
+""".format(n=n, n_noun=('die' if n==1 else 'dice'), attr=attr, bonus=result.bonus,
+           successes=result.successes, negations=result.negations, total=result.total,
+           rs_noun='success' if result.successes == 1 else 'successes',
+           bs_noun='success' if result.bonus == 1 else 'successes',
+           neg_noun='negation' if result.negations == 1 else 'negations')
 
     return msg
 
@@ -259,7 +253,9 @@ def parse(command):
     except KeyError:
         # nothing to do if command not found
         pass
-    except:
+    except Exception as e:
+        log('Ran into exception!')
+        log(str(e))
         return "I ran into an error on my end, sorry :cry:"
 
     return None;
