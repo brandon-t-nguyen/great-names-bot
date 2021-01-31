@@ -1,6 +1,8 @@
 import time
 import numpy as np # we want their nice randint for uniform random *integers*
 
+MAXIMUM_DICE = 1000
+
 def log(string):
     print('({:.4f}):     '.format(time.time()) + string)
 # command functions will return a string
@@ -30,7 +32,9 @@ help_dice =\
 """
 Usage: `!dice [number of dice: default 1] [sides: default 10]`
     Rolls the provided number of dice, defaulting to 1 with 10 sides
-    Die values range from 1 to the number of sides
+    Die values range from 1 to the number of sides.
+
+    The maximum number of dice that can be rolled is {max_dice}.
 
 Examples:
     * `!dice`
@@ -39,7 +43,7 @@ Examples:
         * `1, 2, 4, 6, 10`
     * `!dice 5 20`
         * `1, 3, 8, 14, 20`
-"""
+""".format(max_dice=MAXIMUM_DICE)
 def cmd_dice(args):
     n = 1
     if len(args) > 0:
@@ -50,6 +54,9 @@ def cmd_dice(args):
             return "`{num}` is not a valid integer".format(num=args[0])
     if n == 0:
         return None
+
+    if n > MAXIMUM_DICE:
+        return "`{num}` exceeds the number of dice that can be rolled ({max_dice})".format(num=n, max_dice=MAXIMUM_DICE)
 
     sides = 10
     if len(args) > 0:
@@ -86,12 +93,14 @@ Usage: `!roll <attribute score> [skill value + modifiers: default is 0] [dice co
     determined by how many die values are less than or equal to the attribute score,
     with 10s negating a success.
 
+    The maximum number of dice that can be rolled is {max_dice}.
+
 Examples:
     * `!roll 5`: this will roll 5 die where rolled values &leq;5 are successes
     * `!roll 5 2`: this will roll 5 die where rolled values &leq;5 are successes, with 2 bonus successes
     * `!roll 5 0 7`: this will roll 7 die where rolled values &leq;5 are successes, with 0 bonus successes 
     * `!roll 5 1 +4`: this will roll 9 (5+4) die where rolled values &leq;5 are successes, with 1 bonus success
-"""
+""".format(max_dice=MAXIMUM_DICE)
 def cmd_roll(args):
     if len(args) == 0:
         return "Please provide an attribute score\n" + help_roll
@@ -122,6 +131,9 @@ def cmd_roll(args):
             args = args[1:]
         except ValueError:
             return "`{num}` is not a valid integer".format(num=args[0])
+
+    if n > MAXIMUM_DICE:
+        return "`{num}` exceeds the number of dice that can be rolled ({max_dice})".format(num=n, max_dice=MAXIMUM_DICE)
     
     rolls = sorted(np.random.randint(1, high=11, size=n))
     
