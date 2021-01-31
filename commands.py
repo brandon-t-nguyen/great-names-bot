@@ -47,9 +47,15 @@ def cmd_roll(args):
 
 help_roll =\
 """
-usage: !roll [number of die: default 1]
+usage: `!roll [number of die: default 1]`
     Rolls the provided number of die, defaulting to 1
     Die values range from 1 to 10
+
+Examples:
+    * `!roll`
+        * `4`
+    * `!roll 5`
+        * `1, 2, 4, 6, 10`
 """
 
 
