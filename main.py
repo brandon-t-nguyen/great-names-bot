@@ -1,5 +1,6 @@
 #!/bin/env python3
 
+import sys
 import os
 import time
 import requests
@@ -91,6 +92,10 @@ if __name__ == "__main__":
 
     # load token
     token_path = './token'
+
+    if len(sys.argv) > 2 and sys.argv[1] == '--token-path':
+        token_path = sys.argv[2]
+
     if 'GNB_TOKEN_PATH' in os.environ:
         token_path = os.environ['GNB_TOKEN_PATH']
 
