@@ -167,9 +167,9 @@ def cmd_roll(args):
 
     if n > MAXIMUM_DICE:
         return "`{num}` exceeds the number of dice that can be rolled ({max_dice})".format(num=n, max_dice=MAXIMUM_DICE)
-    
+
     rolls = sorted(np.random.randint(1, high=11, size=n))
-    
+
     successes = 0
     negations = 0
     for roll in rolls:
