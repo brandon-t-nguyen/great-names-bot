@@ -81,11 +81,11 @@ def cmd_dice(args):
 
 help_roll =\
 """
-Usage: `!roll <attribute score> [skill value + modifiers: default is 0] [dice count: default is attribute]`
+Usage: `!roll <attribute score> [skill value + modifiers: default is 0] [number of dice: default is attribute]`
     By default, rolls a number of dice equal to the provided attribute score.
     Optional positional arguments include:
         * skill value + modifiers (bonuses, power) to add to the total number of successes. The default is 0.
-        * dice count, to handle additional dice granted by points of power.
+        * number of dice, to handle additional dice granted by points of power.
           If this argument has a `+` (e.g. `+2`) in front of the number, it will be added to the attribute score.
           Otherwise, the provided number will be the number of die rolled.
 
