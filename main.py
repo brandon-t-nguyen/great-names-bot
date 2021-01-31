@@ -70,16 +70,16 @@ async def gateway_loop(uri):
                 #log("MESSAGE_CREATE: \"{}\"".format(data['content']))
                 content = data['content']
                 if content.find('!') == 0:
-                    response = commands.parse(content)
-                    if response is not None:
+                    msg = commands.parse(content)
+                    if msg is not None:
                         # good: send it
                         guild_id = data['guild_id']
                         channel_id = data['channel_id']
                         message_id = data['id']
-                        payload = {'content': response, 'message_reference': {'message_id': message_id, 'channel_id': channel_id, 'guild_id': guild_id}}
+                        payload = {'content': msg, 'message_reference': {'message_id': message_id, 'channel_id': channel_id, 'guild_id': guild_id}}
                         url = '{}/channels/{}/messages'.format(api_url, channel_id)
                         r = requests.post(url, headers=headers, json=payload)
-                        log("Sent message ({}: {}): \"{}\"".format(url, str(r.status_code), response))
+                        log("Sent message ({}: {}): \"{}\"".format(url, str(r.status_code), msg))
             elif gpay['op'] == 11:
                 log("Received heartbeat ACK")
             sequence.set(gpay['s'])
