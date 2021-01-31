@@ -44,7 +44,7 @@ def cmd_dice(args):
         try:
             n = int(args[0])
         except ValueError:
-            return "{num} is not a valid integer".format(num=args[0])
+            return "`{num}` is not a valid integer".format(num=args[0])
     if n == 0:
         return None
 
