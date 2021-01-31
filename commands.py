@@ -260,7 +260,7 @@ def parse(command):
         # nothing to do if command not found
         pass
     except:
-        return "Bot encountered an error on its end, sorry :("
+        return "I ran into an error on my end, sorry :cry:"
 
     return None;
 
