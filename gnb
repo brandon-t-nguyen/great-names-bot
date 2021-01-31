@@ -11,7 +11,7 @@ import json
 import commands
 
 def log(string):
-    print('({:.4f}): commands: '.format(time.time()) + string)
+    print('({:.4f}): '.format(time.time()) + string)
 
 # https://stackoverflow.com/questions/42883134/how-to-run-a-coroutine-that-does-not-end-without-getting-stuck-awaiting-a-result
 class Sequence:

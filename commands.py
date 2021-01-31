@@ -5,7 +5,7 @@ MAXIMUM_DICE = 1000
 VERSION_STRING = '1.0'
 
 def log(string):
-    print('({:.4f}):     '.format(time.time()) + string)
+    print('({:.4f}): commands: '.format(time.time()) + string)
 # command functions will return a string
 # provide them the args *after* the command itself (not unix-style!)
 
