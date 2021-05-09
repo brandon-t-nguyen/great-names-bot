@@ -59,6 +59,18 @@ class Commands:
 commands = Commands()
 
 
+help_red =\
+"""
+Usage: `!red`
+    Rolls a black d10 and a red d10
+"""
+def cmd_red(args):
+    black = np.random.randint(1, high=11)
+    red = np.random.randint(1, high=11)
+    msg = "Black: {black}\nRed: {red}".format(black=black, red=red)
+    return Message(msg)
+
+
 help_dice =\
 """
 Usage: `!dice [number of dice: default 1] [sides: default 10]`
@@ -299,6 +311,7 @@ Subcommands:
 
 def cmd_stats(args): return(commands_stats.execute(args))
 
+
 def cmd_help(args):
     if len(args) == 0:
         msg =\
@@ -365,3 +378,4 @@ commands.add(Command('!about', "Provides info about this bot", None, cmd_about))
 commands.add(Command('!dice', "Rolls dice, default being d10", help_dice, cmd_dice))
 commands.add(Command('!roll', "Rolls to calculate successes", help_roll, cmd_roll))
 commands.add(Command('!stats', "Provides various statistics", help_stats, cmd_stats))
+commands.add(Command('!red', "Red Markets roll", help_red, cmd_red))
